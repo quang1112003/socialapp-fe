@@ -1,0 +1,90 @@
+<div class="friendship-page">
+  <!-- Tab Navigation -->
+  <div class="tab-menu">
+    <button class="tab-btn" 
+            [class.active]="selectedTab === 'requests'"
+            (click)="selectTab('requests')">
+      <i class="bi bi-person-plus-fill"></i>
+      Friend Requests
+      <span class="count" *ngIf="friendRequests.length > 0">{{friendRequests.length}}</span>
+    </button>
+    <button class="tab-btn" 
+            [class.active]="selectedTab === 'invitations'"
+            (click)="selectTab('invitations')">
+      <i class="bi bi-person-lines-fill"></i>
+      Sent Requests
+      <span class="count" *ngIf="invitationsSent.length > 0">{{invitationsSent.length}}</span>
+    </button>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <!-- Friend Requests -->
+    <div *ngIf="selectedTab === 'requests'" [class.cards-grid]="friendRequests.length > 0" [class.empty-container]="friendRequests.length === 0">
+      <ng-container *ngIf="friendRequests.length > 0; else noRequest">
+        <div class="request-card" *ngFor="let request of friendRequests">
+          <img [src]="request.otherUserPhotoUrl || './assets/avatar.png'"
+               [alt]="request.otherUserKnowAs"
+               class="profile-img">
+          <div class="card-content">
+            <h3>{{request.otherUserKnowAs}}</h3>
+            <div class="status">
+              <i class="bi bi-clock-fill"></i>
+              <span>Pending Request</span>
+            </div>
+            <div class="actions">
+              <button class="btn-accept" (click)="acceptFriendRequest(request.userId)">
+                <i class="bi bi-check-lg"></i> Accept
+              </button>
+              <button class="btn-reject" (click)="cancelInvitation(request.userId)">
+                <i class="bi bi-x-lg"></i> Reject
+              </button>
+            </div>
+            <button class="btn-profile" routerLink="/members/{{request.otherUserEmail}}">
+              <i class="bi bi-person-fill"></i> View Profile
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Sent Invitations -->
+    <div *ngIf="selectedTab === 'invitations'" [class.cards-grid]="invitationsSent.length > 0" [class.empty-container]="invitationsSent.length === 0">
+      <ng-container *ngIf="invitationsSent.length > 0; else noInvitationsSent">
+        <div class="request-card" *ngFor="let invitation of invitationsSent">
+          <img [src]="invitation.otherUserPhotoUrl || './assets/avatar.png'"
+               [alt]="invitation.otherUserKnowAs"
+               class="profile-img">
+          <div class="card-content">
+            <h3>{{invitation.otherUserKnowAs}}</h3>
+            <div class="status sent">
+              <i class="bi bi-arrow-right-circle-fill"></i>
+              <span>Request Sent</span>
+            </div>
+            <button class="btn-cancel" (click)="cancelInvitation(invitation.friendId)">
+              <i class="bi bi-x-circle"></i> Cancel Request
+            </button>
+            <button class="btn-profile" routerLink="/members/{{invitation.otherUserEmail}}">
+              <i class="bi bi-person-fill"></i> View Profile
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Empty States -->
+    <ng-template #noRequest>
+      <div class="empty-state">
+        <i class="bi bi-person-plus"></i>
+        <p>No friend requests at the moment</p>
+      </div>
+    </ng-template>
+
+    <ng-template #noInvitationsSent>
+      <div class="empty-state">
+        <i class="bi bi-person-lines-fill"></i>
+        <p>You haven't sent any friend requests</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

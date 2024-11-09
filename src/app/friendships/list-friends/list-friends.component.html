@@ -1,0 +1,80 @@
+<div class="friends-container">
+  <div class="friends-header">
+    <h4>Your Friends</h4>
+    <p>People you've connected with</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <i class="bi bi-search"></i>
+      <input 
+        type="text"
+        placeholder="Search friends by name..."
+        [(ngModel)]="searchTerm"
+        (input)="searchFriends($event)"
+        class="search-input"
+      >
+      <i class="bi bi-x-circle clear-icon" 
+         *ngIf="searchTerm"
+         (click)="searchTerm=''; searchFriends({target: {value: ''}})"
+      ></i>
+    </div>
+  </div>
+
+  <ng-template #noFriend>
+    <div class="no-friends">
+      <i class="bi bi-people"></i>
+      <p>You have no friends yet</p>
+      <button class="btn-find" routerLink="/members">Find Friends</button>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="friends.length > 0; else noFriend">
+    <!-- No Results Message -->
+    <div class="no-results" *ngIf="filteredFriends.length === 0">
+      <i class="bi bi-search"></i>
+      <p>No friends found matching "{{searchTerm}}"</p>
+    </div>
+
+    <div class="row">
+      <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6" *ngFor="let friend of filteredFriends">
+        <div class="friend-card">
+          <div class="card-img-wrapper">
+            <div class="profile-circle">
+              <img [src]="friend.otherUserPhotoUrl || './assets/avatar.png'"
+                   [alt]="friend.otherUserKnowAs">
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="user-info">
+              <h5 class="card-title">{{friend.otherUserKnowAs}}</h5>
+              <div class="friend-status">
+                <i class="bi bi-person-check-fill"></i>
+                <span>Friend</span>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn btn-profile" 
+                      routerLink="/members/{{friend.otherUserEmail}}"
+                      title="View Profile">
+                <i class="bi bi-person-fill"></i>
+                <span>Profile</span>
+              </button>
+            </div>
+            <div class="action-buttons">
+              <button class="btn btn-message" 
+                      (click)="navigateToMessage(friend)"
+                      title="Send Message">
+                <i class="bi bi-chat-fill"></i>
+                <span>Message</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

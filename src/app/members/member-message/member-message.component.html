@@ -1,0 +1,55 @@
+<!--<div class="chat-container">-->
+<!--    <div class="chat-header">-->
+<!--        <img [src]="chatUserPhotoUrl() || './assets/avatar.png'" class="avatar">-->
+<!--      <span class="chat-user">{{chatUserName()}}</span>-->
+<!--      <div class="chat-actions">-->
+<!--        &lt;!&ndash; <i class="bi bi-gear"></i> &ndash;&gt;-->
+<!--        &lt;!&ndash; <i class="bi bi-x-circle"></i> &ndash;&gt;-->
+<!--         <p style="color: rgb(4, 246, 0); font-weight: bold; padding-top: 15px;">Đang hoạt động</p>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div class="chat-body" #chatBody>-->
+
+<!--      @if (messages().length > 0) {-->
+<!--        &lt;!&ndash; Vòng lặp hiển thị tin nhắn &ndash;&gt;-->
+<!--        @for (item of messages(); track item.id) {-->
+<!--          <div class="message" [ngClass]="{'received': item.senderUsername === username(), 'sent': item.senderUsername !== username()}">-->
+<!--            <p>{{item.content}}</p>-->
+<!--            <span class="message-time">Send {{item.messageSent | timeago}}</span>-->
+<!--            &lt;!&ndash; <span class="message-time">Đã gửi</span> &ndash;&gt;-->
+<!--            @if(!item.dateRead && item.senderUsername !== username()) {-->
+<!--              <span class="message-time">Chưa đọc</span>-->
+<!--            }-->
+<!--            @if(item.dateRead && item.senderUsername !== username()) {-->
+<!--              <span class="message-time fw-bold text-white">Đã xem</span>-->
+<!--            }-->
+<!--          </div>-->
+<!--        }-->
+<!--      } @else {-->
+<!--        &lt;!&ndash; Hiển thị đoạn văn bản nếu chưa có tin nhắn &ndash;&gt;-->
+<!--        <p class="text-center pt-4 fs-3">Hãy gửi lời chào đến <b>{{chatUserName()}}</b></p>-->
+<!--      }-->
+<!--    </div>-->
+
+<!--    <form #messageForm="ngForm" (ngSubmit)="sendMessage()">-->
+<!--      <div class="chat-footer">-->
+<!--        &lt;!&ndash; <i class="bi bi-emoji-smile"></i> &ndash;&gt;-->
+<!--        <input-->
+<!--        type="text"-->
+<!--        class="chat-input"-->
+<!--        placeholder="Enter message"-->
+<!--        [(ngModel)]="messageContent"-->
+<!--        name="messageContent"-->
+<!--        required-->
+<!--        appAutoFocus>-->
+<!--        &lt;!&ndash; <i class="bi bi-paperclip"></i> &ndash;&gt;-->
+<!--        <button-->
+<!--        type="submit"-->
+<!--        style="border: none; background: white;"-->
+<!--        [disabled]="!messageForm.valid">-->
+<!--        <i [ngStyle]="{'color': messageContent ? 'blue' : ''}" class="bi bi-send-fill"></i>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->

@@ -1,0 +1,57 @@
+<div class="card">
+  <div class="card-img-wrapper">
+    <div class="profile-circle">
+      <img [src]="member().photoUrl || './assets/avatar.png'" 
+           class="card-img-top" 
+           [alt]="member().knowAs">
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="user-info">
+      <h5 class="card-title">{{member().knowAs}}</h5>
+      <div class="location-info" *ngIf="member().countryName">
+        <i class="bi bi-geo-alt-fill"></i>
+        <span>{{member().countryName}}</span>
+      </div>
+    </div>
+
+    <ul class="list-inline member-icons">
+      <li class="list-inline-item">
+        <button class="btn btn-profile" 
+                routerLink="/members/{{member().email}}" 
+                title="View Profile">
+          <i class="bi bi-person-fill"></i>
+        </button>
+      </li>
+
+      <li class="list-inline-item">
+        <button class="btn btn-friend"
+                [ngClass]="{
+                  'pending': friendshipStatus() === 'PENDING',
+                  'unfriended': friendshipStatus() === 'UNFRIENDED' || friendshipStatus() === 'REJECTED',
+                  'accepted': friendshipStatus() === 'ACCEPTED'
+                }"
+                (click)="toggleFriendRequest()"
+                [title]="friendshipStatus() === 'PENDING' ? 'Cancel Request' : 
+                        friendshipStatus() === 'ACCEPTED' ? 'Friends' : 'Add Friend'">
+          <i class="bi" 
+             [ngClass]="{
+               'bi-person-dash-fill': friendshipStatus() === 'PENDING',
+               'bi-person-fill-add': friendshipStatus() === 'UNFRIENDED' || friendshipStatus() === 'REJECTED',
+               'bi-person-check-fill': friendshipStatus() === 'ACCEPTED'
+             }">
+          </i>
+        </button>
+      </li>
+
+      <li class="list-inline-item">
+        <button class="btn btn-message" 
+                (click)="navigateToMessage()"
+                title="Send Message">
+          <i class="bi bi-chat-fill"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,90 @@
+<div class="chatroom-container mt-5">
+  <!-- Chat list sidebar -->
+  <div class="friends-list">
+    <div class="friends-header">Chats</div>
+    <ng-container *ngIf="privateChats$ | async as privateChats">
+      <div *ngFor="let user of privateChats.keys()" class="friend-item" (click)="handleReceiverName(user)" [class.active]="recipient === user">
+        <img [src]="avatarMap.get(user) || 'assets/avatar.png'" [alt]="user" class="friend-avatar">
+        <span class="friend-name">{{ user }}</span>
+        <ng-container *ngIf="newMessagesMap$ | async as newMessagesMap">
+          <span *ngIf="newMessagesMap.get(user)" class="friend-status new-message"></span>
+        </ng-container>
+      </div>
+
+    </ng-container>
+  </div>
+
+  <!-- Chat window -->
+  <div class="chat-window">
+    <div class="chat-header">
+      <span *ngIf="recipient">Chat with {{ recipient }}</span>
+      <div class="call-actions" *ngIf="recipient">
+        <button (click)="initiateCall('phone')">
+          <i class="bi bi-telephone"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-messages">
+      <div *ngIf="showCallNotification" class="call-notification">
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfaAsw6_kMWP1mx6oie7Jje_S9oKAlqivxgA&s"
+          alt="Caller Avatar"
+          class="caller-avatar"
+        />
+        <div class="caller-info">
+          <div class="caller-name">{{ incomingCall?.senderName }}</div>
+          <div class="caller-status">Incoming {{ incomingCall?.callType | titlecase }} Call...</div>
+        </div>
+        <div class="actions">
+          <button (click)="acceptCall()" class="accept-btn">Accept</button>
+          <button (click)="declineCall()" class="decline-btn">Decline</button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="privateChats$ | async as privateChats">
+        <div *ngFor="let chat of privateChats.get(recipient)"
+             class="message"
+             [class.sent]="chat.senderName === userService.getUserData().username"
+             [class.received]="chat.senderName !== userService.getUserData().username"
+             [class.editing]="isEditing && editingMessageId === chat.id">
+
+          <!-- Update the message content section -->
+          <div class="message-content">
+            {{ extractNewMessage(chat.message) }}
+            <span *ngIf="chat.edited" class="edited-indicator">edited</span>
+          </div>
+
+          <!-- Message options only for sent messages -->
+          <div *ngIf="chat.senderName === userService.getUserData().username"
+               class="message-options"
+               (click)="toggleOptionsMenu(chat.id, $event)">
+            <i class="fas fa-ellipsis-v"></i>
+            <div class="message-options-menu" [class.show]="showOptionsMenu === chat.id">
+              <button (click)="startEditMessage(chat.id, extractNewMessage(chat.message))">Edit</button>
+              <button (click)="deleteMessage(chat.id)">Delete</button>
+            </div>
+          </div>
+
+          <!-- Edit input -->
+          <input *ngIf="isEditing && editingMessageId === chat.id"
+                 type="text"
+                 class="edit-input"
+                 [(ngModel)]="editingMessageContent"
+                 (keyup.enter)="saveEditedMessage()">
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Input area -->
+    <div class="chat-input">
+      <input type="text"
+             [(ngModel)]="message"
+             (keyup.enter)="sendPrivateValue()"
+             placeholder="Type a message...">
+      <button (click)="sendPrivateValue()">
+        <i class="bi bi-send"></i>
+      </button>
+    </div>
+  </div>
+</div>

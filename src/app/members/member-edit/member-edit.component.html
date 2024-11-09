@@ -1,0 +1,159 @@
+@if (member) {
+<section class="h-100 gradient-custom-2">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center">
+      <div class="col col-lg-9 col-xl-8">
+        <div class="card">
+          <!-- Profile Header -->
+          <div class="rounded-top text-white d-flex flex-row position-relative">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              <img [src]="member?.photoUrl || './assets/avatar.png'" 
+                   alt="Profile Image"
+                   class="img-fluid img-thumbnail mt-4 mb-2">
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5 class="profile-name">{{member?.knowAs}}</h5>
+              <h6 class="full-name">{{member?.firstName}} {{member?.lastName}}</h6>
+              <div class="location" *ngIf="member?.cityName || member?.countryName || member?.stateName">
+                <i class="bi bi-geo-alt-fill"></i>
+                <span>{{member?.cityName}} - {{member?.stateName}} - {{member?.countryName}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Content Section -->
+          <div class="card-body p-4 text-black">
+            <div class="mb-5 text-body">
+              <tabset class="member-tabset">
+                <tab heading="Your post">
+                  <app-list-post-member [photoTab]="photoTab"></app-list-post-member>
+                </tab>
+
+                <tab heading="Edit Profile">
+                  <form [formGroup]="editForm" (ngSubmit)="updateMember()" class="edit-form">
+                    <div *ngIf="editForm.dirty" class="alert alert-info" role="alert">
+                      <i class="bi bi-info-circle me-2"></i>
+                      Please save your changes before leaving
+                    </div>
+
+                    <div class="form-section">
+                      <h3>About me</h3>
+                      <textarea formControlName="introduction" 
+                               class="form-control" 
+                               rows="4"
+                               placeholder="Tell us about yourself..."></textarea>
+                    </div>
+
+                    <div class="form-section">
+                      <h3>Looking for</h3>
+                      <textarea formControlName="lookingFor" 
+                               class="form-control" 
+                               rows="4"
+                               placeholder="What kind of person are you looking for?"></textarea>
+                    </div>
+
+                    <div class="form-section">
+                      <h3>Interests</h3>
+                      <div class="interests-container">
+                        @for (interest of interest; track interest.id) {
+                          <div class="interest-item">
+                            <input type="checkbox" 
+                                   class="btn-check" 
+                                   [id]="'interest-' + interest.id"
+                                   [checked]="selectedInterests.includes(interest.id)"
+                                   (change)="toggleInterestSelection(interest.id)">
+                            <label class="interest-label" [for]="'interest-' + interest.id">
+                              {{ interest.name }}
+                            </label>
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <h3>Location</h3>
+                      <div class="location-fields">
+                        <div class="form-group">
+                          <label>Country</label>
+                          <select formControlName="countryId" 
+                                  class="form-select"
+                                  (change)="onCountryChange($event)">
+                            <option value="" disabled>Select a country</option>
+                            @for (country of countries$(); track country.id) {
+                              <option [value]="country.id">{{ country.name }}</option>
+                            }
+                          </select>
+                        </div>
+
+                        @if (states$()?.length) {
+                          <div class="form-group">
+                            <label>State</label>
+                            <select formControlName="stateId" 
+                                    class="form-select"
+                                    (change)="onStateChange($event)">
+                              <option value="" disabled>Select a state</option>
+                              @for (state of states$(); track state.id) {
+                                <option [value]="state.id">{{ state.name }}</option>
+                              }
+                            </select>
+                          </div>
+                        }
+
+                        @if (cities$()?.length) {
+                          <div class="form-group">
+                            <label>City</label>
+                            <select formControlName="cityId" class="form-select">
+                              <option value="" disabled>Select a city</option>
+                              @for (city of cities$(); track city.id) {
+                                <option [value]="city.id">{{ city.name }}</option>
+                              }
+                            </select>
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                    <div class="form-section">
+                      <div class="form-check privacy-toggle">
+                        <input type="checkbox" 
+                               class="form-check-input" 
+                               id="isPrivate" 
+                               formControlName="isPrivate">
+                        <label class="form-check-label" for="isPrivate">
+                          Private Account
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="action-buttons">
+                      <button type="submit" 
+                              class="btn btn-primary save-btn" 
+                              [disabled]="!editForm.dirty">
+                        <i class="bi bi-check2"></i>
+                        Save Changes
+                      </button>
+                      <button type="button" 
+                              class="btn btn-outline-primary preview-btn"
+                              routerLink="/members/{{member?.email}}">
+                        <i class="bi bi-eye"></i>
+                        Preview Profile
+                      </button>
+                    </div>
+                  </form>
+                </tab>
+
+                <tab heading="Edit Photos">
+                  <app-photo-editor 
+                    [member]="member" 
+                    (memberChange)="onMemberChange($event)">
+                  </app-photo-editor>
+                </tab>
+              </tabset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+}

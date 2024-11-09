@@ -1,0 +1,50 @@
+<div class="modal-header border-0">
+    <h5 class="modal-title text-center w-100">Edit Post</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+<div class="modal-body">
+    <div class="d-flex align-items-center mb-3">
+        <img [src]="accountService.user$()!.photoUrl || './assets/avatar.png'" class="avatar rounded-circle me-2">
+        <span class="username">{{ accountService.user$()!.knowAs | titlecase }}</span>
+    </div>
+    <form (ngSubmit)="updatePost()">
+        <textarea class="form-control post-textarea" rows="3"
+                  [placeholder]="'What’s on your mind?'"
+                  [(ngModel)]="updatedContent"
+                  name="content"
+                  style="background: white !important; border: none; color: black;"
+                  autofocus>
+        </textarea>
+
+        <div class="upload-section mt-3">
+            <nz-upload nzListType="picture-card"
+            [(nzFileList)]="fileList"
+            [nzShowButton]="fileList.length < 10"
+            [nzPreview]="handlePreview"
+            (nzChange)="handleChange($event)"
+            >
+     <div>
+         <span nz-icon nzType="plus"></span>
+         <div style="margin-top: 8px">Upload image</div>
+     </div>
+ </nz-upload>
+
+
+ <div class="mt-3">
+    <h6>Uploaded Photos:</h6>
+    <div class="uploaded-photos-container">
+      <div *ngFor="let file of fileList" class="uploaded-photo-wrapper">
+        <img [src]="file.url" alt="Uploaded Image" class="uploaded-photo" />
+        <button type="button" class="remove-photo-button"
+                (click)="removePhoto(file.uid)">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+        </div>
+
+        <button nz-button nzType="primary" class="w-25 mt-3" (click)="addPhotosToPost()">Add Photos</button>
+        <button nz-button nzType="primary" class="w-25 mt-3 mx-3" [disabled]="!updatedContent">Update Post</button>
+    </form>
+</div>

@@ -1,0 +1,75 @@
+<!-- Only show header and sidebar if NOT on auth pages -->
+<ng-container *ngIf="!isAuthPage()">
+  <header class="header">
+    <div class="header-left">
+      <button class="toggle-sidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+      <img src="assets/logo/logo-small.png" alt="Logo" class="logo">
+      <input type="text" class="search-input" placeholder="Search...">
+    </div>
+
+    <div class="header-right" *ngIf="(accountService.user$()) as user">
+      <div class="user-info" (click)="toggleDropdown()">
+        <img [src]="user.photoUrl || './assets/avatar.png'" [alt]="user.firstName" class="user-avatar">
+        <span class="user-name">Hi, {{user.firstName}}</span>
+        <div class="dropdown" [class.active]="isDropdownOpen">
+          <div class="dropdown-header">
+            <img [src]="user.photoUrl || './assets/avatar.png'" alt="Profile" class="dropdown-avatar">
+            <div class="dropdown-user-info">
+              <span class="dropdown-name">{{user.firstName}}</span>
+              <span class="dropdown-email">{{user.email}}</span>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a routerLink="/members/edit" class="dropdown-item">
+            <i class="fas fa-cog"></i>
+            Edit Profile
+          </a>
+          <a routerLink="/members/{{user.email}}" class="dropdown-item">
+            <i class="fas fa-user"></i>
+            Preview Profile
+          </a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <a class="sidebar-item" (click)="openPostModal()">
+      <i class="fas fa-pen"></i>
+      Create Post
+    </a>
+    
+    <a routerLink="/members/member-lists" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-user-plus"></i>
+      Suggestions
+    </a>
+    
+    <a routerLink="/message" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-comment"></i>
+      Messages
+    </a>
+    
+    <a routerLink="/list-friendships" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-users"></i>
+      Friends
+    </a>
+    
+    <a routerLink="/friendships" routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-user-friends"></i>
+      Friend Requests and Invitations
+    </a>
+
+    <a *appHasRole="['ADMIN','MODERATOR']" routerLink="/admin/administrator" 
+       routerLinkActive="active" class="sidebar-item">
+      <i class="fas fa-cog"></i>
+      Administrator
+    </a>
+  </aside>
+</ng-container>

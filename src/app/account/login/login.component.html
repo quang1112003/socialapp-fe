@@ -1,0 +1,59 @@
+<div class="modern-container">
+    <div class="login-box">
+        <img src="assets/logo/logo-main.png" alt="Logo" class="brand-logo">
+        <p class="brand-tagline">Your unique social experience starts here</p>
+        
+        <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    formControlName="email"
+                    placeholder="Email address or username"
+                    [class.input-error]="submitted && loginForm.get('email')?.errors"
+                    class="modern-input"
+                    appAutoFocus>
+                <i *ngIf="submitted && loginForm.get('email')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && loginForm.get('email')?.hasError('required')) {
+                    <div class="validation-error">Email is required</div>
+                }
+                @if (submitted && loginForm.get('email')?.hasError('email')) {
+                    <div class="validation-error">Please enter a valid email address</div>
+                }
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="password"
+                    formControlName="password"
+                    placeholder="Password"
+                    [class.input-error]="submitted && loginForm.get('password')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && loginForm.get('password')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && loginForm.get('password')?.hasError('required')) {
+                    <div class="validation-error">Password is required</div>
+                }
+            </div>
+
+            @if(errorMessage.length > 0) {
+                <div class="error-text">
+                    <app-validation-message [errorMessage]="errorMessage"></app-validation-message>
+                </div>
+            }
+
+            <button type="submit" class="signin-button">Sign In</button>
+            
+            <a routerLink="/account/send-email/forgot-username-or-password" class="forgot-link">
+                Forgot your password?
+            </a>
+        </form>
+
+        <div class="signup-section">
+            <p class="signup-text">
+                Don't have an account? 
+                <a routerLink="/account/register" class="signup-link">Sign up</a>
+            </p>
+        </div>
+    </div>
+</div>

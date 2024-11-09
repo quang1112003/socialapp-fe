@@ -1,0 +1,47 @@
+<div class="d-flex justify-content-center">
+    <div class="col-12 col-lg-5">
+        <main class="form-signin">
+            <form [formGroup]="emailForm" (ngSubmit)="sendEmail()" autocomplete="off">
+                <div class="text-center mb-4">
+                    @if(modeMain.includes('resend-email-confirmation-link')) {
+                        <h5 class="mb-3 fw-bold">Điền email của bạn vào đây</h5>
+                    } @else if(modeMain.includes('forgot-username-or-password')) {
+                        <h5 class="mb-3 fw-bold">Nhập email của bạn để lấy lại mật khẩu</h5>
+                    }
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="email" formControlName="email" id="email" class="form-control"
+                    [class.is-invalid]="submitted && emailForm.get('email')?.errors">
+                    <label for="email">Email</label>
+                    @if (submitted && emailForm.get('email')?.hasError('required')) {
+                        <span class="text-danger mt-2 d-block fw-bold">Email không được để trống</span>
+                    }@else if (submitted && emailForm.get('email')?.hasError('pattern')) {
+                        <span class="text-danger mt-2 d-block fw-bold">Email không hợp lệ</span>
+                    }
+                </div>
+
+                @if(errorMessage.length > 0) {
+                    <div class="form-floatin">
+                        <app-validation-message [errorMessage]="errorMessage"></app-validation-message>
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-gird">
+                            <button class="btn btn-block btn-success" type="submit" [disabled]="!emailForm.get('email')?.valid"> Gửi </button>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-gird">
+                            <button class="btn btn-block btn-secondary" type="button" (click)="cancel()"> 
+                                Trở lại </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </main>
+    </div>
+</div>

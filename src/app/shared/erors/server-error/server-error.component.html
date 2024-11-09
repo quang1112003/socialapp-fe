@@ -1,0 +1,8 @@
+<h1 class="fs-1 text-center mt-5">Internal Server Error</h1>
+
+@if(error) {
+    <p class="fs-3">Error: {{error.message}}</p>
+    <code class="pt-5">
+        {{error.details}}
+    </code>
+}

@@ -1,0 +1,113 @@
+<div class="posts-container">
+    @for (item of listPostMember; track item.id) {
+        <div class="post-card">
+            <!-- Post Header -->
+            <div class="post-header">
+                <div class="user-info">
+                    <div class="profile-circle">
+                        <img [src]="member?.photoUrl || getPhotoMainCurrentUser() || './assets/avatar.png'" 
+                             alt="User Avatar" 
+                             class="avatar">
+                    </div>
+                    <div class="user-details">
+                        <h5 class="username">{{ member?.knowAs || getKnowAsCurrentUser() }}</h5>
+                        <span class="post-time">{{ item.createdAt | timeago }}</span>
+                    </div>
+                </div>
+                
+                @if (item.user?.id === accountService.user$()?.id) {
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" 
+                                type="button"
+                                [id]="'dropdownMenu' + item.id"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" [attr.aria-labelledby]="'dropdownMenu' + item.id">
+                            <li>
+                                <a class="dropdown-item" (click)="openEditPostModal(item)">
+                                    <i class="bi bi-pencil-fill me-2"></i> Edit
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" (click)="deletePost(item.id)">
+                                    <i class="bi bi-trash-fill me-2"></i> Delete
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+
+            <!-- Post Content -->
+            <div class="post-content">
+                <p>{{ item.content }}</p>
+            </div>
+
+            <!-- Post Images -->
+            @if (item.photos && item.photos.length > 0) {
+                <div class="post-images">
+                    <div class="main-image-wrapper">
+                        <img [src]="item.photos[currentImageIndex[item.id] || 0].url" 
+                             class="main-image"
+                             (click)="openLightbox(item.id, currentImageIndex[item.id] || 0)">
+                        @if (item.photos.length > 1) {
+                            <button class="nav-btn prev" 
+                                    (click)="prevImage(item.id)"
+                                    *ngIf="currentImageIndex[item.id] > 0">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button class="nav-btn next" 
+                                    (click)="nextImage(item.id)"
+                                    *ngIf="currentImageIndex[item.id] < item.photos.length - 1">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        }
+                    </div>
+                    
+                    @if (item.photos.length > 1) {
+                        <div class="thumbnails">
+                            @for (photo of item.photos; track photo.id; let i = $index) {
+                                <div class="thumb" 
+                                     [class.active]="currentImageIndex[item.id] === i"
+                                     (click)="setCurrentImage(item.id, i)">
+                                    <img [src]="photo.url" [alt]="'Thumbnail ' + (i + 1)">
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Post Actions -->
+            <div class="interaction-buttons">
+                <button class="btn">
+                    <i class="bi bi-heart"></i>
+                    <span>Like</span>
+                </button>
+                <button class="btn">
+                    <i class="bi bi-chat"></i>
+                    <span>Comment</span>
+                </button>
+                <button class="btn">
+                    <i class="bi bi-share"></i>
+                    <span>Share</span>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" [class.show]="isLightboxOpen" (click)="closeLightbox()">
+    <button class="close-btn" (click)="closeLightbox()">
+        <i class="bi bi-x-lg"></i>
+    </button>
+    @if (currentLightboxImage) {
+        <img [src]="currentLightboxImage.url" 
+             class="lightbox-image" 
+             (click)="$event.stopPropagation()">
+    }
+</div>

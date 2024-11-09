@@ -1,0 +1,100 @@
+.chat-container {
+    width: auto;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .chat-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #0084ff;
+        color: white;
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-user {
+            flex-grow: 1;
+            font-weight: bold;
+        }
+
+        .chat-actions i {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+    }
+
+    .chat-body {
+        flex-grow: 1;
+        padding: 10px;
+        background-color: #f5f5f5;
+        overflow-y: auto;
+        overflow-y: auto; 
+        height: 50vh; 
+
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            max-width: 70%;
+            position: relative;
+
+            p {
+                margin: 0;
+            }
+
+            .message-time {
+                font-size: 10px;
+                color: #000000;
+                text-align: right;
+                margin-top: 4px;
+            }
+
+            &.received {
+                background-color: #e4e6eb;
+                align-self: flex-start;
+            }
+
+            &.sent {
+                background-color: #0084ff;
+                color: white;
+                align-self: flex-end;
+                margin-left: auto; 
+            }
+        }
+    }
+
+    .chat-footer {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+
+        .chat-input {
+            flex-grow: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            margin: 0 10px;
+            background-color: #f0f2f5;
+            outline: none;
+        }
+
+        i {
+            font-size: 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+    }
+}
+  

@@ -1,0 +1,97 @@
+<div class="search-container">
+  <div class="search-header">
+    <h4>Find Your Friends</h4>
+    <p>Filter and discover people who match your interests</p>
+  </div>
+
+  <div class="search-content">
+    <!-- Sort Section -->
+    <div class="sort-section">
+      <button 
+        type="button" 
+        class="sort-button"
+        [ngClass]="{'active': memberService.userParams().orderBy === 'dateCreated'}"
+        (click)="loadMember()"
+        btnRadio="dateCreated"
+        [(ngModel)]="memberService.userParams().orderBy">
+        <i class="bi bi-clock-history"></i>
+        Recently joined
+      </button>
+    </div>
+
+    <!-- Search Form -->
+    <form #form="ngForm" (ngSubmit)="loadMember()" class="search-form">
+      <div class="search-filters">
+        <!-- Age Range -->
+        <div class="filter-group">
+          <label>Age Range</label>
+          <div class="age-inputs">
+            <input type="number" 
+                   class="form-control" 
+                   name="minAge"
+                   placeholder="From"
+                   [(ngModel)]="memberService.userParams().minAge">
+            <span class="age-separator">-</span>
+            <input type="number" 
+                   class="form-control" 
+                   name="maxAge"
+                   placeholder="To"
+                   [(ngModel)]="memberService.userParams().maxAge">
+          </div>
+        </div>
+
+        <!-- Gender -->
+        <div class="filter-group">
+          <label>Gender</label>
+          <select name="gender" 
+                  class="form-select" 
+                  [(ngModel)]="memberService.userParams().gender">
+            @for (item of genderList; track item.value) {
+              <option [value]="item.value">{{item.display}}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button type="submit" class="btn-search">
+            <i class="bi bi-search"></i>
+            Search
+          </button>
+          <button type="button" class="btn-reset" (click)="resetFilter()">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Member Cards Grid -->
+<div class="row mt-4">
+  @for (member of memberService.paginatedResult()?.items; track member.id) {
+    <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-4 col-sm-6">
+      <app-member-card [member]="member"></app-member-card>
+    </div>
+  }
+</div>
+
+<!-- Pagination -->
+@if (memberService.paginatedResult()?.items && 
+     memberService.paginatedResult()?.pagination!.totalItems > memberService.userParams().pageSize) {
+  <div class="d-flex justify-content-center">
+    <pagination 
+      [boundaryLinks]="true" 
+      [totalItems]="memberService.paginatedResult()?.pagination!.totalItems"
+      [itemsPerPage]="memberService.paginatedResult()?.pagination!.itemsPerPage" 
+      (pageChanged)="pageChanged($event)"
+      [(ngModel)]="memberService.paginatedResult()?.pagination!.currentPage"
+      [maxSize]="10" 
+      previousText="&lsaquo;" 
+      nextText="&rsaquo;" 
+      firstText="&laquo;" 
+      lastText="&raquo;">
+    </pagination>
+  </div>
+}

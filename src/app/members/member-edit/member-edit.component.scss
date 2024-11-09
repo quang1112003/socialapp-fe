@@ -1,0 +1,292 @@
+.gradient-custom-2 {
+  background: #f6f9fc;
+  padding: 20px 0;
+}
+
+.card {
+  background: white;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 2px 15px rgba(99, 102, 241, 0.15);
+  overflow: hidden;
+
+  .rounded-top {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    padding: 20px;
+    height: auto !important;
+  }
+
+  .img-thumbnail {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .full-name {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 5px 0;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+
+    i {
+      color: white;
+      font-size: 1rem;
+    }
+
+    span {
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  .card-body {
+    .member-tabset {
+      .nav-tabs {
+        border: none;
+        margin-bottom: 30px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        padding: 0 20px;
+
+        .nav-item {
+          .nav-link {
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            color: #8b5cf6;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            background: rgba(139, 92, 246, 0.1);
+
+            &.active {
+              background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+              color: white;
+              box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+            }
+
+            &:hover:not(.active) {
+              background: rgba(139, 92, 246, 0.15);
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+    }
+
+    .edit-form {
+      max-width: 800px;
+      margin: 0 auto;
+
+      .alert {
+        border-radius: 12px;
+        border: none;
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        padding: 15px;
+        margin-bottom: 25px;
+      }
+
+      .form-section {
+        margin-bottom: 25px;
+
+        h3 {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #64748b;
+          margin-bottom: 15px;
+          text-transform: none;
+          letter-spacing: 0;
+        }
+
+        textarea.form-control {
+          border-radius: 12px;
+          border: 2px solid #e2e8f0;
+          padding: 12px;
+          transition: all 0.3s ease;
+          resize: none;
+
+          &:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+          }
+        }
+
+        .interests-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+
+          .interest-item {
+            .interest-label {
+              padding: 8px 16px;
+              border-radius: 20px;
+              background: #f1f5f9;
+              color: #64748b;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              font-weight: 500;
+
+              &:hover {
+                background: rgba(139, 92, 246, 0.1);
+                color: #8b5cf6;
+              }
+            }
+
+            .btn-check:checked + .interest-label {
+              background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+              color: white;
+            }
+          }
+        }
+
+        .location-fields {
+          .form-group {
+            margin-bottom: 15px;
+
+            label {
+              font-size: 0.95rem;
+              color: #64748b;
+              margin-bottom: 8px;
+            }
+
+            .form-select {
+              border-radius: 12px;
+              border: 2px solid #e2e8f0;
+              padding: 10px;
+              transition: all 0.3s ease;
+
+              &:focus {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+              }
+            }
+          }
+        }
+
+        .privacy-toggle {
+          margin-top: 20px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          .form-check-input {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            margin: 0;
+
+            &:checked {
+              background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+              border-color: transparent;
+
+              &::after {
+                content: '';
+                position: absolute;
+                left: 6px;
+                top: 2px;
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+              }
+            }
+
+            &:hover {
+              border-color: #8b5cf6;
+            }
+
+            &:focus {
+              outline: none;
+              box-shadow: none;
+              border-color: #8b5cf6;
+            }
+          }
+
+          .form-check-label {
+            color: #64748b;
+            font-weight: 500;
+            user-select: none;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+
+        .btn {
+          padding: 10px 25px;
+          border-radius: 12px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.3s ease;
+
+          i {
+            font-size: 1.1rem;
+          }
+
+          &.save-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            color: white;
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+          }
+
+          &.preview-btn {
+            border: 2px solid #6366f1;
+            color: #6366f1;
+
+            &:hover {
+              background: rgba(99, 102, 241, 0.1);
+            }
+          }
+        }
+      }
+    }
+  }
+}

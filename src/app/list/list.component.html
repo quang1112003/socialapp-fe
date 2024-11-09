@@ -1,0 +1,42 @@
+<!-- <div class="row">
+    <div class="col-12 d-flex justify-content-center my-3">
+        <div class="btn-group">
+            <a [(ngModel)]="predicate" (click)="loadLike()" btnRadio="liked" class="btn btn-info"
+                [ngClass]="{'active': predicate === 'liked'}">Người bạn đã thích</a>
+
+            <a [(ngModel)]="predicate" (click)="loadLike()" btnRadio="likedBy" class="btn btn-info"
+                [ngClass]="{'active': predicate === 'likedBy'}">Người đã thích bạn</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @for (item of likeService.paginatedResult()?.items; track item.id) {
+    <div class="col-3">
+        <div class="card-container">
+            <span class="pro"><i class="bi bi-heart-fill" style="font-size: 2rem; color: #ff0318;">
+                </i></span>
+            <img class="round" [src]="item.photoUrl" [alt]="item.knowAs" />
+            <h3>{{item.knowAs}}</h3>
+            <h6>{{item.city + ' - ' + item.country}}</h6>
+            <div class="buttons">
+                <button class="primary" routerLink="/members/{{item.email}}">
+                    Message
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+@if (likeService.paginatedResult()?.items) {
+
+    <div class="d-flex justify-content-center mt-5">
+        <pagination [boundaryLinks]="true" [totalItems]="likeService.paginatedResult()?.pagination!.totalItems"
+            [itemsPerPage]="likeService.paginatedResult()?.pagination!.itemsPerPage" (pageChanged)="pageChanged($event)"
+            [(ngModel)]="likeService.paginatedResult()?.pagination!.currentPage"
+            [maxSize]="10" previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+        </pagination>
+    </div>
+    
+} -->

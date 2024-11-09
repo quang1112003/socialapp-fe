@@ -1,0 +1,15 @@
+<div class="form-floating mb-3">
+    <input [type]="type()" [class.is-invalid]="(control.invalid && (submitted|| control.touched))"
+    [class.is-valid]="control.valid && (submitted || control.touched)"
+        [formControl]="control" class="form-control">
+    <label [for]="id()">{{label()}}</label>
+    <span *ngIf="control.hasError('required') && (submitted|| control.touched)"
+        class="text-danger mt-2 d-block">{{label()}} is required</span>
+    <span *ngIf="(control.hasError('minlength') || control.hasError('maxlength')) && (submitted|| control.touched)"
+        class="text-danger mt-2 d-block">
+        {{label()}} must be at least 2 characters and no more than 15 characters
+    </span>
+    <span *ngIf="control.hasError('pattern') && (submitted|| control.touched)"
+        class="text-danger mt-2 d-block">{{label()}} invalid</span>
+    <span *ngIf="control.hasError('isMatching') && (submitted|| control.touched)" class="text-danger mt-2 d-block">Confirm password incorrect</span>
+</div>

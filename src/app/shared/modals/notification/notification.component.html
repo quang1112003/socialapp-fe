@@ -1,0 +1,17 @@
+<div class="modal-header" [ngClass]="{'bg-success': isSuccess, 'bg-danger': !isSuccess}">
+  <h6 class="modal-title pull-left">{{ title }}</h6>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  {{message}}
+</div>
+
+<div class="modal-footer">
+  <button style="background-color: white; color: black;" 
+          type="button" class="btn" (click)="confirm()">OK</button>
+  <button style="background-color: white; color: black;" 
+          type="button" class="btn" (click)="cancel()">Cancel</button>
+</div>

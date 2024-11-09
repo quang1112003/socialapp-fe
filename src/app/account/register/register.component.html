@@ -1,0 +1,153 @@
+<div class="modern-container">
+    <div class="login-box">
+        <img src="assets/logo/logo-main.png" alt="Logo" class="brand-logo">
+        <p class="brand-tagline">Create your account</p>
+        
+        <form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
+            <div class="input-row">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        formControlName="firstName"
+                        placeholder="First Name"
+                        [class.input-error]="submitted && registerForm.get('firstName')?.errors"
+                        class="modern-input"
+                        appAutoFocus>
+                    <i *ngIf="submitted && registerForm.get('firstName')?.errors" 
+                       class="fas fa-exclamation-circle error-icon"></i>
+                    @if (submitted && registerForm.get('firstName')?.errors) {
+                        <div class="validation-error">First name is required</div>
+                    }
+                </div>
+
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        formControlName="lastName"
+                        placeholder="Last Name"
+                        [class.input-error]="submitted && registerForm.get('lastName')?.errors"
+                        class="modern-input">
+                    <i *ngIf="submitted && registerForm.get('lastName')?.errors" 
+                       class="fas fa-exclamation-circle error-icon"></i>
+                    @if (submitted && registerForm.get('lastName')?.errors) {
+                        <div class="validation-error">Last name is required</div>
+                    }
+                </div>
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    formControlName="knowAs"
+                    placeholder="Nickname"
+                    [class.input-error]="submitted && registerForm.get('knowAs')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && registerForm.get('knowAs')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && registerForm.get('knowAs')?.errors) {
+                    <div class="validation-error">Nickname is required</div>
+                }
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="email" 
+                    formControlName="email"
+                    placeholder="Email address"
+                    [class.input-error]="submitted && registerForm.get('email')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && registerForm.get('email')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && registerForm.get('email')?.errors) {
+                    <div class="validation-error">Please enter a valid email address</div>
+                }
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="date" 
+                    formControlName="dateOfBirth"
+                    [max]="maxDate"
+                    [class.input-error]="submitted && registerForm.get('dateOfBirth')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && registerForm.get('dateOfBirth')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && registerForm.get('dateOfBirth')?.errors) {
+                    <div class="validation-error">Date of birth is required</div>
+                }
+            </div>
+
+            <div class="gender-group">
+                <label>Gender:</label>
+                <div class="gender-options">
+                    <label class="gender-option">
+                        <input type="radio" value="male" formControlName="gender">
+                        <span>Male</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" value="female" formControlName="gender">
+                        <span>Female</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="password"
+                    formControlName="pass"
+                    placeholder="Password"
+                    [class.input-error]="submitted && registerForm.get('pass')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && registerForm.get('pass')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && registerForm.get('pass')?.errors) {
+                    <div class="validation-error">Password must be at least 6 characters</div>
+                }
+            </div>
+
+            <div class="input-wrapper">
+                <input 
+                    type="password"
+                    formControlName="confirmPassword"
+                    placeholder="Confirm Password"
+                    [class.input-error]="submitted && registerForm.get('confirmPassword')?.errors"
+                    class="modern-input">
+                <i *ngIf="submitted && registerForm.get('confirmPassword')?.errors" 
+                   class="fas fa-exclamation-circle error-icon"></i>
+                @if (submitted && registerForm.get('confirmPassword')?.errors) {
+                    <div class="validation-error">Passwords don't match</div>
+                }
+            </div>
+
+            @if(errorMessage.length > 0) {
+                <div class="error-text">
+                    <app-validation-message [errorMessage]="errorMessage"></app-validation-message>
+                </div>
+            }
+
+            <button type="submit" class="signin-button">Sign Up</button>
+        </form>
+
+        <div class="signup-section">
+            <p class="signup-text">
+                Already have an account? 
+                <a routerLink="/account/login" class="signup-link">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- <p>{{registerForm.value | json}}</p> -->
+
+<!-- <div class="form-floating mb-3">
+                    <input type="password" formControlName="password" id="password" class="form-control"
+                    [class.is-invalid]="submitted && registerForm.get('password')?.errors
+                    && registerForm.get('password')?.touched">
+                    <label for="password">Mật khẩu</label>
+                    @if (submitted && registerForm.get('password')?.hasError('required')) {
+                        <span class="text-danger mt-2 d-block">Mật khẩu không được để trống</span>
+                    }@else if (submitted && registerForm.get('password')?.hasError('minlength') || registerForm.get('password')?.hasError('maslength')) {
+                        <span class="text-danger mt-2 d-block">Mật khẩu phải ít nhất 6 ký tự và không quá 15 ký tự</span>
+                    }
+                </div> -->
+                

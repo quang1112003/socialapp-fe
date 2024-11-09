@@ -1,0 +1,11 @@
+<div class="form-floating mb-3">
+    <input [class.is-invalid]="(control.invalid && (submitted|| control.touched))"
+    [class.is-valid]="control.valid && (submitted || control.touched)"
+    bsDatepicker
+    [bsConfig]="bsConfig"
+    [maxDate]="maxDate()"
+    [formControl]="control" class="form-control">
+    <label for="dateOfBirth">{{label()}}</label>
+    <span *ngIf="control.hasError('required') && (submitted|| control.touched)"
+        class="text-danger mt-2 d-block">{{label()}} is required</span>
+</div>
