@@ -11,6 +11,9 @@ import { TimeagoModule } from 'ngx-timeago';
 import { Message } from '../../shared/models/message/message.model';
 import { Friendships, FriendshipStatus } from '../../shared/models/user/friendships.model';
 import { ListPostMemberComponent } from '../list-post-member/list-post-member.component';
+import { PostStatus } from '../../shared/models/user/post-response.model';
+import { AccountService } from '../../account/account.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-member-details',
@@ -46,6 +49,8 @@ export class MemberDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private gallery = inject(Gallery);
   public FriendshipStatus = FriendshipStatus;
+  private accountService = inject(AccountService);
+  filteredImages: GalleryItem[] = [];
 
   member!: Member;
   friendshipStatus: FriendshipStatus | null = null;
@@ -56,7 +61,7 @@ export class MemberDetailsComponent implements OnInit {
     this.route.data.subscribe({
       next: data => {
         this.member = data['member'];
-        this.loadImages(this.member.photos);
+        this.loadVisiblePhotos();
   
         this.memberService.getFriendshipStatus(this.member.id).subscribe({
           next: (status: Friendships) => {
@@ -68,6 +73,64 @@ export class MemberDetailsComponent implements OnInit {
             console.error('Failed to get friendship status');
           }
         });
+      }
+    });
+  }
+
+  private loadVisiblePhotos() {
+    const currentUserId = this.accountService.user$()?.id;
+    const isOwnProfile = currentUserId === this.member.id;
+
+    // If it's the user's own profile, show all photos
+    if (isOwnProfile) {
+      this.loadImages(this.member.photos);
+      return;
+    }
+
+    // Get all visible posts for the member
+    this.memberService.getPostId(this.member.id).subscribe({
+      next: (posts) => {
+        // Get photos only from visible posts
+        const visiblePhotos: Photo[] = [];
+
+        // Always include the main photo
+        const mainPhoto = this.member.photos?.find(p => p.isMain);
+        if (mainPhoto) {
+          visiblePhotos.push(mainPhoto);
+        }
+
+        // Add photos from visible posts
+        posts.forEach(post => {
+          // Only include photos if the post is visible
+          if (post.photos && post.photos.length > 0) {
+            switch (post.status) {
+              case PostStatus.PUBLIC:
+                visiblePhotos.push(...post.photos);
+                break;
+              case PostStatus.FRIENDS:
+                if (this.friendshipStatus === FriendshipStatus.ACCEPTED) {
+                  visiblePhotos.push(...post.photos);
+                }
+                break;
+              case PostStatus.PRIVATE:
+                // Private photos are only visible to the owner, which is handled by isOwnProfile check above
+                break;
+            }
+          }
+        });
+
+        // Remove duplicates based on photo ID
+        const uniquePhotos = Array.from(
+          new Map(visiblePhotos.map(photo => [photo.id, photo])).values()
+        );
+
+        this.loadImages(uniquePhotos);
+      },
+      error: (error) => {
+        console.error('Error loading visible photos:', error);
+        // If there's an error, just show the main photo
+        const mainPhoto = this.member.photos?.find(p => p.isMain);
+        this.loadImages(mainPhoto ? [mainPhoto] : []);
       }
     });
   }

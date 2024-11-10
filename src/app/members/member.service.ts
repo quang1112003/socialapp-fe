@@ -301,5 +301,9 @@ export class MemberService {
     return this.http.get<boolean>(`${this.api}/friendships/check/${userId1}/${userId2}`);
   }
 
+  canViewPost(postId: number, userId: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.api}/post/${postId}/can-view/${userId}`);
+  }
+
 }
 
