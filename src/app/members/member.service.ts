@@ -15,7 +15,12 @@ import { City } from '../shared/models/user/city.model';
 import { MemberUpdateDto } from '../shared/models/user/member-update.model';
 import { Interest } from '../shared/models/user/interest.model';
 import { PostRequest } from '../shared/models/user/post.model';
-import { PostResponse } from '../shared/models/user/post-response.model';
+import { PostResponse, PostStatus } from '../shared/models/user/post-response.model';
+
+interface CreatePostRequest {
+  content: string;
+  status: 'PUBLIC' | 'FRIENDS' | 'PRIVATE';
+}
 
 @Injectable({
   providedIn: 'root'
@@ -86,36 +91,57 @@ export class MemberService {
     );
   }
 
-  getPostId(userId: string) {
-    return this.http.get<PostResponse[]>(`${this.api}/post?userId=${userId}`);
+  getPostId(userId: string): Observable<PostResponse[]> {
+    const currentUserId = this.accountService.user$()?.id;
+    return this.http.get<PostResponse[]>(`${this.api}/post`, {
+        params: new HttpParams()
+            .set('userId', userId)
+            .set('viewerId', currentUserId || '')
+    }).pipe(
+        tap(posts => console.log('Raw posts from API:', posts)),
+        map(posts => posts.map(post => ({
+            ...post,
+            status: post.status || PostStatus.PUBLIC
+        }))),
+        tap(posts => console.log('Processed posts:', posts))
+    );
   }
 
-  createPost(postRequest: PostRequest, files?: File[]) {
+  createPost(postData: CreatePostRequest, files: File[]) {
+    console.log('Creating post with data:', postData);
     const formData = new FormData();
-    formData.append('content', postRequest.content);
-
-    if (files) {
-      files.forEach(file => {
+    formData.append('content', postData.content);
+    formData.append('status', postData.status);
+    
+    files.forEach(file => {
         formData.append('files', file);
-      });
-    }
+    });
 
-    return this.http.post(`${this.api}/post`, formData, {
-      headers: new HttpHeaders({
-        'enctype': 'multipart/form-data'
-      }),
-      observe: 'response'
+    return this.http.post<PostResponse>(`${this.api}/post`, formData, {
+        headers: new HttpHeaders({
+            'enctype': 'multipart/form-data'
+        }),
+        observe: 'response'
     }).pipe(
-      tap(response => console.log('Response:', response)),
-      map(response => {
-        // Kiểm tra nếu body có tồn tại hoặc không
-        if (response.body !== null && response.body !== undefined) {
-          return response.body;
-        } else {
-          // Xử lý khi không có body, có thể trả về một giá trị mặc định hoặc chỉ mã trạng thái
-          return { message: 'Post created successfully!' };
-        }
-      })
+        tap(response => {
+            console.log('Create post full response:', response);
+            if (response.body) {
+                console.log('Response body status:', response.body.status);
+            }
+        }),
+        map(response => {
+            if (response.body) {
+                // Ensure we're setting the status from the form data if not in response
+                return {
+                    ...response.body,
+                    status: response.body.status || postData.status
+                };
+            }
+            return { 
+                message: 'Post created successfully!',
+                status: postData.status 
+            } as any;
+        })
     );
   }
 
@@ -269,6 +295,10 @@ export class MemberService {
     //   }));
     // }),
     // );
+  }
+
+  areFriends(userId1: string, userId2: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.api}/friendships/check/${userId1}/${userId2}`);
   }
 
 }

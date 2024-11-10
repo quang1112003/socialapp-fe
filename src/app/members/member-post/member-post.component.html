@@ -6,32 +6,31 @@
 </div>
 
 <div class="modal-body">
-    <div class="post-header">
-        <div class="user-info">
-            <img [src]="accountService.user$()!.photoUrl || './assets/avatar.png'" 
-                 class="avatar"
-                 [alt]="accountService.user$()!.knowAs">
-            <span class="username">{{ accountService.user$()!.knowAs }}</span>
-        </div>
-        
-        <!-- Post Privacy Selector -->
-        <div class="privacy-selector">
-            <select class="form-select" formControlName="privacy">
-                <i class="bi bi-globe2"></i>
-                <option value="public">
-                    <i class="bi bi-globe2"></i> Public
-                </option>
-                <option value="friends">
-                    <i class="bi bi-people"></i> Friends
-                </option>
-                <option value="private">
-                    <i class="bi bi-lock"></i> Private
-                </option>
-            </select>
-        </div>
-    </div>
-
     <form [formGroup]="postForm" (ngSubmit)="submitPost()">
+        <div class="post-header">
+            <div class="user-info">
+                <img [src]="currentUser()?.photoUrl || './assets/avatar.png'" 
+                     class="avatar"
+                     [alt]="currentUser()?.knowAs">
+                <span class="username">{{ currentUser()?.knowAs }}</span>
+            </div>
+            
+            <!-- Post Privacy Selector -->
+            <div class="privacy-selector">
+                <select class="form-select" formControlName="status">
+                    <option [value]="PostStatus.PUBLIC">
+                        <i class="bi bi-globe2"></i> Public
+                    </option>
+                    <option [value]="PostStatus.FRIENDS">
+                        <i class="bi bi-people"></i> Friends
+                    </option>
+                    <option [value]="PostStatus.PRIVATE">
+                        <i class="bi bi-lock"></i> Private
+                    </option>
+                </select>
+            </div>
+        </div>
+
         <textarea class="post-textarea"
                   rows="3" 
                   [placeholder]="getPlaceholder()"

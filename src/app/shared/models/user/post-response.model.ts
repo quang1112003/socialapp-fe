@@ -1,17 +1,18 @@
-import { Photo } from "./photo.model";
+import { Photo } from './photo.model';
+import { User } from './user.model';
+
+export enum PostStatus {
+    PUBLIC = 'PUBLIC',
+    FRIENDS = 'FRIENDS',
+    PRIVATE = 'PRIVATE'
+}
 
 export interface PostResponse {
     id: number;
     content: string;
+    status?: PostStatus | string;
     createdAt: Date;
     updatedAt: Date;
-    user: User;
     photos: Photo[];
-    appUserId: string;
-}
-
-export interface User {
-    id: any;
-    firstName: string;
-    lastName: string;
+    user: User;
 }

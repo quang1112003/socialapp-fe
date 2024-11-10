@@ -5,20 +5,16 @@
         <div class="card">
           <div class="rounded-top text-white d-flex flex-row position-relative" style="background-color: #000; height: 200px;">
             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-              <img [src]="member?.photoUrl || './assets/avatar.png'" 
+              <img [src]="member.photoUrl || './assets/avatar.png'" 
                    alt="Generic placeholder image" 
                    class="img-fluid img-thumbnail mt-4 mb-2">
             </div>
             <div class="ms-3" style="margin-top: 130px;">
-              <h5 class="profile-name">{{member?.knowAs}} 
-                <span class="active-status" *ngIf="friendshipStatus === FriendshipStatus.ACCEPTED && member?.lastActive">
-                  (Active <b>{{capitalize(member?.lastActive | timeago)}})</b>
-                </span>
-              </h5>
-              <h6 class="full-name">{{member?.firstName}} {{member?.lastName}}</h6>
-              <div class="location" *ngIf="member?.cityName || member?.stateName || member?.countryName">
+              <h5 class="profile-name">{{member.knowAs}}</h5>
+              <h6 class="full-name">{{member.firstName}} {{member.lastName}}</h6>
+              <div class="location" *ngIf="member.cityName || member.stateName || member.countryName">
                 <i class="bi bi-geo-alt-fill"></i>
-                <span>{{member?.cityName}}-{{member?.stateName}} - {{member?.countryName}}</span>
+                <span>{{member.cityName}}-{{member.stateName}} - {{member.countryName}}</span>
               </div>
             </div>
           </div>
@@ -28,20 +24,20 @@
               <tabset class="member-tabset">
                 <tab heading="Introduction">
                   <div class="intro-section">
-                    <div class="info-block" *ngIf="member?.introduction">
+                    <div class="info-block" *ngIf="member.introduction">
                       <h3>About me</h3>
-                      <p>{{member?.introduction}}</p>
+                      <p>{{member.introduction}}</p>
                     </div>
 
-                    <div class="info-block" *ngIf="member?.lookingFor">
+                    <div class="info-block" *ngIf="member.lookingFor">
                       <h3>Looking for</h3>
-                      <p>{{member?.lookingFor}}</p>
+                      <p>{{member.lookingFor}}</p>
                     </div>
 
-                    <div class="info-block" *ngIf="member?.interests && member.interests.length > 0">
+                    <div class="info-block" *ngIf="member.interests && member.interests.length > 0">
                       <h3>Interests</h3>
                       <div class="interests-list">
-                        <span class="interest-tag" *ngFor="let interest of member?.interests">
+                        <span class="interest-tag" *ngFor="let interest of member.interests">
                           {{interest.name}}
                         </span>
                       </div>
@@ -50,13 +46,13 @@
                     <div class="info-block">
                       <h3>Basic Information</h3>
                       <div class="basic-info">
-                        <div class="info-row" *ngIf="member?.age">
+                        <div class="info-row" *ngIf="member.age">
                           <span class="label">Age</span>
-                          <span class="value">{{member?.age}}</span>
+                          <span class="value">{{member.age}}</span>
                         </div>
-                        <div class="info-row" *ngIf="member?.dateCreated">
+                        <div class="info-row" *ngIf="member.dateCreated">
                           <span class="label">Member since</span>
-                          <span class="value">{{member?.dateCreated | date: 'mediumDate'}}</span>
+                          <span class="value">{{member.dateCreated | date: 'mediumDate'}}</span>
                         </div>
                       </div>
                     </div>

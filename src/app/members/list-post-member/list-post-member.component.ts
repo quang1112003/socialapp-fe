@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, inject, Input, input, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MemberService } from '../member.service';
 import { Member } from '../../shared/models/user/member.model';
-import { PostResponse } from '../../shared/models/user/post-response.model';
+import { PostResponse, PostStatus } from '../../shared/models/user/post-response.model';
 import { Gallery, GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { AccountService } from '../../account/account.service';
 import { TimeagoModule } from 'ngx-timeago';
@@ -11,6 +11,7 @@ import { EditPostMemberComponent } from '../edit-post-member/edit-post-member.co
 import { SharedService } from '../../shared/shared.service';
 import { LIGHTBOX_CONFIG, LightboxModule } from 'ng-gallery/lightbox';
 import { ToastrService } from 'ngx-toastr';
+import { Observable, of, tap } from 'rxjs';
 
 @Component({
   selector: 'app-list-post-member',
@@ -34,7 +35,7 @@ import { ToastrService } from 'ngx-toastr';
     }
   ]
 })
-export class ListPostMemberComponent implements OnInit {
+export class ListPostMemberComponent implements OnInit, OnDestroy {
   private memberService = inject(MemberService);
   public accountService = inject(AccountService);
   private modalService = inject(BsModalService);
@@ -60,34 +61,52 @@ export class ListPostMemberComponent implements OnInit {
   isLightboxOpen = false;
   currentLightboxImage: any = null;
 
+  readonly PostStatus = PostStatus; // Make enum available to template
+
+  private loadingPosts = false; // Add this flag
+
   ngOnInit(): void {
     this.getPostByMember();
   }
 
   getPostByMember() {
+    if (this.loadingPosts) {
+      return;
+    }
+    this.loadingPosts = true;
+    this.getVisiblePosts();
+    this.loadingPosts = false;
+  }
+
+  getVisiblePosts(): void {
     const memberId = this.member?.id || this.accountService.user$()!.id;
+    this.isLoading = true; // Show loading state
+    
     this.memberService.getPostId(memberId).subscribe({
-      next: (res: PostResponse[]) => {
-        this.listPostMember = res || []; // Ensure it's an array
-        this.isLoading = false; // Set loading to false once data is fetched
-        if (this.listPostMember) {
+      next: (posts: PostResponse[]) => {
+        this.listPostMember = posts;
+        
+        // Initialize galleries for new posts
+        if (this.listPostMember && this.listPostMember.length > 0) {
           this.listPostMember.forEach(post => {
-            this.currentImageIndex[post.id] = 0; // Initialize index for each post
+            this.currentImageIndex[post.id] = 0;
             if (post.photos && post.photos.length > 0) {
-              const galleryItems = post.photos.map(photo => new ImageItem({ src: photo.url, thumb: photo.url }));
+              const galleryItems = post.photos.map(photo => 
+                new ImageItem({ src: photo.url, thumb: photo.url })
+              );
               this.imagesByPost.set(post.id, galleryItems);
-              
-              // Initialize gallery for each post
               setTimeout(() => {
                 this.initGallery(post.id);
-              });
+              }, 0);
             }
           });
         }
+        this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error loading posts:', err);
-        this.isLoading = false; // Ensure loading is set to false even on error
+      error: (error) => {
+        console.error('Error loading posts:', error);
+        this.isLoading = false;
+        this.toastr.error('Failed to load posts');
       }
     });
   }
@@ -113,7 +132,6 @@ export class ListPostMemberComponent implements OnInit {
       if (confirmed) {
         this.memberService.deletePost(postId).subscribe({
           next: (response: any) => {
-            // Remove the post from the list
             this.listPostMember = this.listPostMember.filter(post => post.id !== postId);
             this.toastr.success(response.message || 'Post deleted successfully');
           },
@@ -135,7 +153,6 @@ export class ListPostMemberComponent implements OnInit {
     });
 
     this.bsModalRef.content.postUpdated.subscribe((updatedPost: PostResponse) => {
-      // Update the post in the list
       const index = this.listPostMember.findIndex(p => p.id === updatedPost.id);
       if (index !== -1) {
         this.listPostMember[index] = updatedPost;
@@ -155,6 +172,8 @@ export class ListPostMemberComponent implements OnInit {
 
   onPostSubmitted() {
     this.postAdded.emit();
+    // Refresh posts immediately after submission
+    this.getVisiblePosts();
   }
 
   prevImage(postId: number) {
@@ -179,13 +198,58 @@ export class ListPostMemberComponent implements OnInit {
     if (post && post.photos[imageIndex]) {
       this.currentLightboxImage = post.photos[imageIndex];
       this.isLightboxOpen = true;
-      document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+      document.body.style.overflow = 'hidden';
     }
   }
 
   closeLightbox() {
     this.isLightboxOpen = false;
     this.currentLightboxImage = null;
-    document.body.style.overflow = 'auto'; // Restore scrolling
+    document.body.style.overflow = 'auto';
+  }
+
+  canViewPost(post: PostResponse): Observable<boolean> {
+    const currentUserId = this.accountService.user$()?.id;
+    
+    // Cache the result for each post
+    if (!this.visibilityCache.has(post.id)) {
+        const visibility$ = this.calculateVisibility(post, currentUserId);
+        this.visibilityCache.set(post.id, visibility$);
+    }
+    
+    return this.visibilityCache.get(post.id)!;
+  }
+
+  private visibilityCache = new Map<number, Observable<boolean>>();
+
+  private calculateVisibility(post: PostResponse, currentUserId: string | undefined): Observable<boolean> {
+    // If it's the user's own post
+    if (post.user.id === currentUserId) {
+        return of(true);
+    }
+
+    // If post is public
+    if (post.status === PostStatus.PUBLIC) {
+        return of(true);
+    }
+
+    // If post is private, only owner can see
+    if (post.status === PostStatus.PRIVATE) {
+        return of(post.user.id === currentUserId);
+    }
+
+    // If post is for friends, check friendship status
+    if (post.status === PostStatus.FRIENDS) {
+        return this.memberService.areFriends(currentUserId!, post.user.id).pipe(
+            tap(areFriends => console.log('Friendship check result:', areFriends))
+        );
+    }
+
+    return of(false);
+  }
+
+  // Clear cache when component is destroyed
+  ngOnDestroy() {
+    this.visibilityCache.clear();
   }
 }

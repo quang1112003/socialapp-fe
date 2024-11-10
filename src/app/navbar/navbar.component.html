@@ -9,8 +9,14 @@
       <input type="text" class="search-input" placeholder="Search...">
     </div>
 
-    <div class="header-right" *ngIf="(accountService.user$()) as user">
-      <div class="user-info" (click)="toggleDropdown()">
+    <div class="header-actions">
+      <!-- Add create post button here -->
+      <button class="create-post-btn" (click)="openPostModal()">
+        <i class="fas fa-pen"></i>
+        <span>Create Post</span>
+      </button>
+
+      <div class="user-info" *ngIf="(accountService.user$()) as user" (click)="toggleDropdown()">
         <img [src]="user.photoUrl || './assets/avatar.png'" [alt]="user.firstName" class="user-avatar">
         <span class="user-name">Hi, {{user.firstName}}</span>
         <div class="dropdown" [class.active]="isDropdownOpen">
@@ -41,10 +47,11 @@
   </header>
 
   <aside class="sidebar">
-    <a class="sidebar-item" (click)="openPostModal()">
+    <!-- Remove or comment out this line -->
+    <!-- <a class="sidebar-item" (click)="openPostModal()">
       <i class="fas fa-pen"></i>
       Create Post
-    </a>
+    </a> -->
     
     <a routerLink="/members/member-lists" routerLinkActive="active" class="sidebar-item">
       <i class="fas fa-user-plus"></i>

@@ -1,11 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { MemberService } from '../member.service';
 import { AccountService } from '../../account/account.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+
+export enum PostStatus {
+  PUBLIC = 'PUBLIC',
+  FRIENDS = 'FRIENDS',
+  PRIVATE = 'PRIVATE'
+}
 
 @Component({
   selector: 'app-member-post',
@@ -18,8 +24,13 @@ import { ToastrService } from 'ngx-toastr';
   ]
 })
 export class MemberPostComponent {
-  postForm!: FormGroup;
+  postForm: FormGroup;
   selectedFiles: { file: File, preview: string }[] = [];
+  PostStatus = PostStatus;
+
+  currentUser = computed(() => this.accountService.user$());
+
+  @Output() postCreated = new EventEmitter<void>();
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -31,7 +42,7 @@ export class MemberPostComponent {
   ) {
     this.postForm = this.fb.group({
       content: [''],
-      privacy: ['public']
+      status: [PostStatus.PUBLIC]
     });
   }
 
@@ -66,16 +77,21 @@ export class MemberPostComponent {
       return;
     }
 
-    const { content } = this.postForm.value;
+    const { content, status } = this.postForm.value;
     const files = this.selectedFiles.map(f => f.file);
 
-    this.memberService.createPost({ content }, files).subscribe({
+    this.memberService.createPost({ content, status }, files).subscribe({
       next: (res: any) => {
+        if (res.id) {
+          localStorage.setItem(`post_${res.id}_status`, status);
+        }
+        
         this.postForm.reset();
         this.selectedFiles = [];
         this.closeModal();
         this.router.navigate(['/members/edit']);
         this.toastr.success(res.message || 'Post created successfully');
+        this.postCreated.emit();
       },
       error: (error) => {
         this.toastr.error(error.error?.message || 'Failed to create post');
@@ -88,7 +104,8 @@ export class MemberPostComponent {
   }
 
   getPlaceholder(): string {
-    const knowAs = this.accountService.user$()?.knowAs || '';
+    const user = this.currentUser();
+    const knowAs = user?.knowAs || '';
     const capitalizedKnowAs = knowAs.charAt(0).toUpperCase() + knowAs.slice(1);
     return `Hey ${capitalizedKnowAs}, what are you thinking?`;
   }

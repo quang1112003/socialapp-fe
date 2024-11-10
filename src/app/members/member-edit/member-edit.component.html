@@ -7,16 +7,16 @@
           <!-- Profile Header -->
           <div class="rounded-top text-white d-flex flex-row position-relative">
             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-              <img [src]="member?.photoUrl || './assets/avatar.png'" 
+              <img [src]="member.photoUrl || './assets/avatar.png'" 
                    alt="Profile Image"
                    class="img-fluid img-thumbnail mt-4 mb-2">
             </div>
             <div class="ms-3" style="margin-top: 130px;">
-              <h5 class="profile-name">{{member?.knowAs}}</h5>
-              <h6 class="full-name">{{member?.firstName}} {{member?.lastName}}</h6>
-              <div class="location" *ngIf="member?.cityName || member?.countryName || member?.stateName">
+              <h5 class="profile-name">{{member.knowAs}}</h5>
+              <h6 class="full-name">{{member.firstName}} {{member.lastName}}</h6>
+              <div class="location" *ngIf="member.cityName || member.stateName || member.countryName">
                 <i class="bi bi-geo-alt-fill"></i>
-                <span>{{member?.cityName}} - {{member?.stateName}} - {{member?.countryName}}</span>
+                <span>{{member.cityName}} - {{member.stateName}} - {{member.countryName}}</span>
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@
                           </select>
                         </div>
 
-                        @if (states$()?.length) {
+                        @if (states$().length) {
                           <div class="form-group">
                             <label>State</label>
                             <select formControlName="stateId" 
@@ -99,7 +99,7 @@
                           </div>
                         }
 
-                        @if (cities$()?.length) {
+                        @if (cities$().length) {
                           <div class="form-group">
                             <label>City</label>
                             <select formControlName="cityId" class="form-select">
@@ -134,7 +134,7 @@
                       </button>
                       <button type="button" 
                               class="btn btn-outline-primary preview-btn"
-                              routerLink="/members/{{member?.email}}">
+                              routerLink="/members/{{member.email}}">
                         <i class="bi bi-eye"></i>
                         Preview Profile
                       </button>
